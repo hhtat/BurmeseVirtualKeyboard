@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?define ProductName = "BurmeseVirtualKeyboard" ?>
+<?define ProductNameFriendly = "Burmese Virtual Keyboard" ?>
+<?define ProductVersion = "1.0.0.0" ?>
+<?define ProductManufacturer = "Hein Htat" ?>
+<?define ProductUpgradeCode = "fce9c404-82b5-4cfb-b850-eeb6aee34287" ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="$(var.ProductNameFriendly)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.ProductManufacturer)" UpgradeCode="$(var.ProductUpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of [ProductNameFriendly] is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Icon Id="icon.ico" SourceFile="$(var.BurmeseVirtualKeyboard.ProjectDir)\icon.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+
+    <Feature Id="ProductFeature" Level="1">
+      <ComponentRef Id="ApplicationExeComponent" />
+      <ComponentRef Id="ApplicationShortcutComponent" />
+    </Feature>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductNameFriendly)"/>
+      </Directory>
+    </Directory>
+
+    <Component Id="ApplicationExeComponent" Directory="INSTALLFOLDER">
+      <File Source="$(var.BurmeseVirtualKeyboard.TargetPath)" />
+    </Component>
+
+    <Component Id="ApplicationShortcutComponent" Directory="ApplicationProgramsFolder">
+      <Shortcut Id="ApplicationStartMenuShortcut" Name="$(var.ProductNameFriendly)" Description="$(var.ProductNameFriendly) $(var.ProductVersion)" Target="[INSTALLFOLDER]$(var.BurmeseVirtualKeyboard.TargetFileName)" WorkingDirectory="INSTALLFOLDER"/>
+      <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\Microsoft\$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+  </Product>
+</Wix>
