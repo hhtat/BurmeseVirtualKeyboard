@@ -6,10 +6,9 @@
         Width="640"
         Topmost="True"
         Background="Black"
-        FontSize="14"
-        FontFamily="resources/#Zawgyi-One"
         Loaded="Window_Loaded">
-    <Grid x:Name="keyboardGrid" ShowGridLines="True">
+    <Grid x:Name="keyboardGrid"
+          TextBlock.FontFamily="resources/#Zawgyi-One">
     </Grid>
 </Window>
 

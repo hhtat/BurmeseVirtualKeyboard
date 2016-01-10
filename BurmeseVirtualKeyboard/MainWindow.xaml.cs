@@ -40,11 +40,26 @@ namespace BurmeseVirtualKeyboard
       {
         char character = keyCharacters[i];
 
+        TextBlock textBlock = new TextBlock()
+        {
+          Text = character.ToString(),
+          TextAlignment = TextAlignment.Center,
+          FontSize = 42.0,
+          Width = 100.0,
+          Height = 100.0,
+          Padding = new Thickness(0.0, 14.0, 0.0, 0.0),
+        };
+
+        Viewbox viewbox = new Viewbox()
+        {
+          Child = textBlock,
+        };
+
         Button button = new Button()
         {
-          Content = character,
-          Background = new SolidColorBrush(Colors.Black),
+          Content = viewbox,
           Foreground = new SolidColorBrush(Colors.White),
+          Background = new SolidColorBrush(Colors.Black),
           BorderThickness = new Thickness(),
         };
 
