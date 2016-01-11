@@ -15,7 +15,7 @@ namespace BurmeseVirtualKeyboard
     {
       InitializeComponent();
 
-      addKeyButtons(keyCharactersZawgyi, 16);
+      addKeyButtons(keyCharactersZawgyi, 24);
     }
 
     private void addKeyButtons(string keyCharacters, int keysPerRow)
