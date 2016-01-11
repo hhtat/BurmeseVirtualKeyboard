@@ -10,17 +10,28 @@ namespace BurmeseVirtualKeyboard
   public partial class MainWindow : Window
   {
     private const string keyCharactersZawgyi = "ကခဂဃငစဆဇဈဉညဋဌဍဎဏတထဒဓနပဖဗဘမယရ႐လဝသႆဟဠအ၏ဤဥဦဧဩဪ၌၍၎႑႒ဣါၚာိီုူေဲဳဴွံ့း္်ၼြၱၶၻ၀၁၂၃၄၅၆၇၈၉၊။ၽၾၿႀႁႂႃႄျ႔႕႖႗ၤၦၧၱၲၷ႖ၼဤ၌ၸၠဉ၍ၪႆၥၰဈၺၽႇႎႌႃႄႉႍႋၵၶၹၨၳၴၡၣႅၻၫၩႁႂ";
+    private const int keysPerRow = 24;
 
     public MainWindow()
     {
       InitializeComponent();
 
-      addKeyButtons(keyCharactersZawgyi, 24);
+      sizeAndPosition();
+      addKeyButtons();
     }
 
-    private void addKeyButtons(string keyCharacters, int keysPerRow)
+    private void sizeAndPosition()
     {
-      int numRows = (keyCharacters.Length + keysPerRow - 1) / keysPerRow;
+      Height = ((keyCharactersZawgyi.Length + keysPerRow - 1) / keysPerRow) * SystemParameters.PrimaryScreenWidth / keysPerRow;
+      Width = SystemParameters.PrimaryScreenWidth;
+
+      Left = 0;
+      Top = SystemParameters.PrimaryScreenHeight - Height;
+    }
+
+    private void addKeyButtons()
+    {
+      int numRows = (keyCharactersZawgyi.Length + keysPerRow - 1) / keysPerRow;
 
       keyboardGrid.Children.Clear();
       keyboardGrid.RowDefinitions.Clear();
@@ -36,9 +47,9 @@ namespace BurmeseVirtualKeyboard
         keyboardGrid.ColumnDefinitions.Add(new ColumnDefinition());
       }
 
-      for (int i = 0; i < keyCharacters.Length; i++)
+      for (int i = 0; i < keyCharactersZawgyi.Length; i++)
       {
-        char character = keyCharacters[i];
+        char character = keyCharactersZawgyi[i];
 
         TextBlock textBlock = new TextBlock()
         {
