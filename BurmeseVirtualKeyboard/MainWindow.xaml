@@ -9,6 +9,34 @@
         Loaded="Window_Loaded">
     <Grid x:Name="keyboardGrid"
           TextBlock.FontFamily="resources/#Zawgyi-One">
+        <Grid.Resources>
+            <Style TargetType="Button">
+                <Setter Property="Background" Value="#302f37" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Margin" Value="1" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border BorderThickness="0"
+                                    Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#44444b" />
+                        <Setter Property="Foreground" Value="White" />
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="Foreground" Value="Black" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
     </Grid>
 </Window>
 

@@ -58,9 +58,6 @@ namespace BurmeseVirtualKeyboard
         Button button = new Button()
         {
           Content = viewbox,
-          Foreground = new SolidColorBrush(Colors.White),
-          Background = new SolidColorBrush(Colors.Black),
-          BorderThickness = new Thickness(),
         };
 
         Grid.SetRow(button, i / keysPerRow);
