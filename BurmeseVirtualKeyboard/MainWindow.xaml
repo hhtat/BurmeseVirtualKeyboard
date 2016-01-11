@@ -8,7 +8,7 @@
         Background="Black"
         Opacity="0.8"
         Loaded="Window_Loaded">
-    <Grid x:Name="keyboardGrid">
+    <Grid>
         <Grid.Resources>
             <Style TargetType="Button">
                 <Setter Property="Background" Value="#302f37" />
@@ -17,11 +17,13 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border BorderThickness="0"
-                                    Background="{TemplateBinding Background}">
-                                <ContentPresenter HorizontalAlignment="Center"
-                                                  VerticalAlignment="Center" />
-                            </Border>
+                            <Viewbox>
+                                <Border BorderThickness="0"
+                                        Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center" />
+                                </Border>
+                            </Viewbox>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
@@ -37,6 +39,8 @@
                 </Style.Triggers>
             </Style>
         </Grid.Resources>
+        <Grid x:Name="openedGrid" />
+        <Grid x:Name="closedGrid" />
     </Grid>
 </Window>
 

@@ -14,39 +14,63 @@ namespace BurmeseVirtualKeyboard
 
     private readonly FontFamily zawgyiOne = new FontFamily(new Uri("pack://application:,,,/"), "resources/#Zawgyi-One");
 
+    private bool openedState = false;
+
     public MainWindow()
     {
       InitializeComponent();
 
-      sizeAndPosition();
       addKeyButtons();
+      toggleState();
     }
 
-    private void sizeAndPosition()
+    private void toggleState()
     {
-      Height = ((keyCharactersZawgyi.Length + numKeysPerRow - 1) / numKeysPerRow) * SystemParameters.PrimaryScreenWidth / numKeysPerRow;
-      Width = SystemParameters.PrimaryScreenWidth;
+      openedState = !openedState;
 
-      Left = 0;
+      int numRows = (keyCharactersZawgyi.Length + numKeysPerRow - 1) / numKeysPerRow;
+
+      if (openedState)
+      {
+        closedGrid.Visibility = Visibility.Collapsed;
+
+        Height = numRows * SystemParameters.PrimaryScreenWidth / numKeysPerRow;
+        Width = SystemParameters.PrimaryScreenWidth;
+
+        openedGrid.Visibility = Visibility.Visible;
+      }
+      else
+      {
+        openedGrid.Visibility = Visibility.Collapsed;
+
+        Height = SystemParameters.PrimaryScreenWidth / numKeysPerRow;
+        Width = SystemParameters.PrimaryScreenWidth / numKeysPerRow;
+
+        closedGrid.Visibility = Visibility.Visible;
+      }
+
       Top = SystemParameters.PrimaryScreenHeight - Height;
+      Left = SystemParameters.PrimaryScreenWidth - Width;
+
+      Activate();
     }
 
     private void addKeyButtons()
     {
       int numRows = (keyCharactersZawgyi.Length + numKeysPerRow - 1) / numKeysPerRow;
 
-      keyboardGrid.Children.Clear();
-      keyboardGrid.RowDefinitions.Clear();
-      keyboardGrid.ColumnDefinitions.Clear();
+      openedGrid.Children.Clear();
+      openedGrid.RowDefinitions.Clear();
+      openedGrid.ColumnDefinitions.Clear();
 
       for (int i = 0; i < numRows; i++)
       {
-        keyboardGrid.RowDefinitions.Add(new RowDefinition());
+        openedGrid.RowDefinitions.Add(new RowDefinition());
       }
 
       for (int i = 0; i < numKeysPerRow; i++)
       {
-        keyboardGrid.ColumnDefinitions.Add(new ColumnDefinition());
+        openedGrid.ColumnDefinitions.Add(new ColumnDefinition());
       }
 
       for (int i = 0; i < keyCharactersZawgyi.Length; i++)
@@ -64,6 +88,7 @@ namespace BurmeseVirtualKeyboard
             Height = 100.0,
             Padding = new Thickness(0.0, 14.0, 0.0, 0.0),
           },
+          openedGrid,
           i / numKeysPerRow,
           i % numKeysPerRow,
           (object sender, RoutedEventArgs e) =>
@@ -82,22 +107,56 @@ namespace BurmeseVirtualKeyboard
           Height = 100.0,
           Padding = new Thickness(0.0, 20.0, 0.0, 0.0),
         },
+        openedGrid,
         numRows - 1,
-        numKeysPerRow - 1,
+        numKeysPerRow - 2,
         (object sender, RoutedEventArgs e) =>
         {
           Close();
         });
+
+      addButton(
+        new TextBlock()
+        {
+          Text = "❱",
+          TextAlignment = TextAlignment.Center,
+          FontSize = 42.0,
+          Width = 100.0,
+          Height = 100.0,
+          Padding = new Thickness(0.0, 20.0, 0.0, 0.0),
+        },
+        openedGrid,
+        numRows - 1,
+        numKeysPerRow - 1,
+        (object sender, RoutedEventArgs e) =>
+        {
+          toggleState();
+        });
+
+      addButton(
+        new TextBlock()
+        {
+          Text = "❰",
+          TextAlignment = TextAlignment.Center,
+          FontSize = 42.0,
+          Width = 100.0,
+          Height = 100.0,
+          Padding = new Thickness(0.0, 20.0, 0.0, 0.0),
+        },
+        closedGrid,
+        1,
+        1,
+        (object sender, RoutedEventArgs e) =>
+        {
+          toggleState();
+        });
     }
 
-    private void addButton(UIElement content, int row, int column, RoutedEventHandler clickHandler)
+    private void addButton(UIElement content, Grid grid, int row, int column, RoutedEventHandler clickHandler)
     {
       Button button = new Button()
       {
-        Content = new Viewbox()
-        {
-          Child = content,
-        },
+        Content = content,
       };
 
       Grid.SetRow(button, row);
@@ -105,7 +164,7 @@ namespace BurmeseVirtualKeyboard
 
       button.Click += clickHandler;
 
-      keyboardGrid.Children.Add(button);
+      grid.Children.Add(button);
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
