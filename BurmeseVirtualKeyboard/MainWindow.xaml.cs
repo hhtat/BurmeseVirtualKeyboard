@@ -51,8 +51,6 @@ namespace BurmeseVirtualKeyboard
 
       Top = SystemParameters.PrimaryScreenHeight - Height;
       Left = SystemParameters.PrimaryScreenWidth - Width;
-
-      Activate();
     }
 
     private void addKeyButtons()
