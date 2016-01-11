@@ -5,15 +5,15 @@
         Topmost="True"
         AllowsTransparency="True"
         WindowStyle="None"
-        Background="Black"
-        Opacity="0.8"
+        Background="#01000000"
         Loaded="Window_Loaded">
     <Grid>
         <Grid.Resources>
             <Style TargetType="Button">
                 <Setter Property="Background" Value="#302f37" />
                 <Setter Property="Foreground" Value="White" />
-                <Setter Property="Margin" Value="1" />
+                <Setter Property="Margin" Value="0,0,1,1" />
+                <Setter Property="Opacity"  Value="0.6" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
@@ -31,10 +31,12 @@
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#44444b" />
                         <Setter Property="Foreground" Value="White" />
+                        <Setter Property="Opacity"  Value="0.9" />
                     </Trigger>
                     <Trigger Property="IsPressed" Value="True">
                         <Setter Property="Background" Value="White" />
                         <Setter Property="Foreground" Value="Black" />
+                        <Setter Property="Opacity"  Value="1.0" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
