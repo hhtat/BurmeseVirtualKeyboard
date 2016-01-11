@@ -34,6 +34,8 @@ namespace BurmeseVirtualKeyboard
       {
         closedGrid.Visibility = Visibility.Collapsed;
 
+        Top = 0;
+
         Height = numRows * SystemParameters.PrimaryScreenWidth / numKeysPerRow;
         Width = SystemParameters.PrimaryScreenWidth;
 
@@ -43,13 +45,14 @@ namespace BurmeseVirtualKeyboard
       {
         openedGrid.Visibility = Visibility.Collapsed;
 
+        Top = (numRows - 1) * SystemParameters.PrimaryScreenWidth / numKeysPerRow;
+
         Height = SystemParameters.PrimaryScreenWidth / numKeysPerRow;
         Width = SystemParameters.PrimaryScreenWidth / numKeysPerRow;
 
         closedGrid.Visibility = Visibility.Visible;
       }
 
-      Top = SystemParameters.PrimaryScreenHeight - Height;
       Left = SystemParameters.PrimaryScreenWidth - Width;
     }
 
