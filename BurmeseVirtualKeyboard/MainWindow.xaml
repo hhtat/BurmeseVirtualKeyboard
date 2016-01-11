@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Burmese Virtual Keyboard (Zawgyi)"
         Topmost="True"
+        AllowsTransparency="True"
+        WindowStyle="None"
         Background="Black"
+        Opacity="0.8"
         Loaded="Window_Loaded">
-    <Grid x:Name="keyboardGrid"
-          TextBlock.FontFamily="resources/#Zawgyi-One">
+    <Grid x:Name="keyboardGrid">
         <Grid.Resources>
             <Style TargetType="Button">
                 <Setter Property="Background" Value="#302f37" />

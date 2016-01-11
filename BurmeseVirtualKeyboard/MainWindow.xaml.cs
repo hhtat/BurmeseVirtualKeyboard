@@ -10,7 +10,9 @@ namespace BurmeseVirtualKeyboard
   public partial class MainWindow : Window
   {
     private const string keyCharactersZawgyi = "ကခဂဃငစဆဇဈဉညဋဌဍဎဏတထဒဓနပဖဗဘမယရ႐လဝသႆဟဠအ၏ဤဥဦဧဩဪ၌၍၎႑႒ဣါၚာိီုူေဲဳဴွံ့း္်ၼြၱၶၻ၀၁၂၃၄၅၆၇၈၉၊။ၽၾၿႀႁႂႃႄျ႔႕႖႗ၤၦၧၱၲၷ႖ၼဤ၌ၸၠဉ၍ၪႆၥၰဈၺၽႇႎႌႃႄႉႍႋၵၶၹၨၳၴၡၣႅၻၫၩႁႂ";
-    private const int keysPerRow = 24;
+    private const int numKeysPerRow = 24;
+
+    private readonly FontFamily zawgyiOne = new FontFamily(new Uri("pack://application:,,,/"), "resources/#Zawgyi-One");
 
     public MainWindow()
     {
@@ -22,7 +24,7 @@ namespace BurmeseVirtualKeyboard
 
     private void sizeAndPosition()
     {
-      Height = ((keyCharactersZawgyi.Length + keysPerRow - 1) / keysPerRow) * SystemParameters.PrimaryScreenWidth / keysPerRow;
+      Height = ((keyCharactersZawgyi.Length + numKeysPerRow - 1) / numKeysPerRow) * SystemParameters.PrimaryScreenWidth / numKeysPerRow;
       Width = SystemParameters.PrimaryScreenWidth;
 
       Left = 0;
@@ -31,7 +33,7 @@ namespace BurmeseVirtualKeyboard
 
     private void addKeyButtons()
     {
-      int numRows = (keyCharactersZawgyi.Length + keysPerRow - 1) / keysPerRow;
+      int numRows = (keyCharactersZawgyi.Length + numKeysPerRow - 1) / numKeysPerRow;
 
       keyboardGrid.Children.Clear();
       keyboardGrid.RowDefinitions.Clear();
@@ -42,7 +44,7 @@ namespace BurmeseVirtualKeyboard
         keyboardGrid.RowDefinitions.Add(new RowDefinition());
       }
 
-      for (int i = 0; i < keysPerRow; i++)
+      for (int i = 0; i < numKeysPerRow; i++)
       {
         keyboardGrid.ColumnDefinitions.Add(new ColumnDefinition());
       }
@@ -51,36 +53,59 @@ namespace BurmeseVirtualKeyboard
       {
         char character = keyCharactersZawgyi[i];
 
-        TextBlock textBlock = new TextBlock()
+        addButton(
+          new TextBlock()
+          {
+            Text = character.ToString(),
+            TextAlignment = TextAlignment.Center,
+            FontSize = 42.0,
+            FontFamily = zawgyiOne,
+            Width = 100.0,
+            Height = 100.0,
+            Padding = new Thickness(0.0, 14.0, 0.0, 0.0),
+          },
+          i / numKeysPerRow,
+          i % numKeysPerRow,
+          (object sender, RoutedEventArgs e) =>
+          {
+            typeCharacter(character);
+          });
+      }
+
+      addButton(
+        new TextBlock()
         {
-          Text = character.ToString(),
+          Text = "✖",
           TextAlignment = TextAlignment.Center,
           FontSize = 42.0,
           Width = 100.0,
           Height = 100.0,
-          Padding = new Thickness(0.0, 14.0, 0.0, 0.0),
-        };
-
-        Viewbox viewbox = new Viewbox()
+          Padding = new Thickness(0.0, 20.0, 0.0, 0.0),
+        },
+        numRows - 1,
+        numKeysPerRow - 1,
+        (object sender, RoutedEventArgs e) =>
         {
-          Child = textBlock,
-        };
+          Close();
+        });
+    }
 
-        Button button = new Button()
+    private void addButton(UIElement content, int row, int column, RoutedEventHandler clickHandler)
+    {
+      Button button = new Button()
+      {
+        Content = new Viewbox()
         {
-          Content = viewbox,
-        };
+          Child = content,
+        },
+      };
 
-        Grid.SetRow(button, i / keysPerRow);
-        Grid.SetColumn(button, i % keysPerRow);
+      Grid.SetRow(button, row);
+      Grid.SetColumn(button, column);
 
-        button.Click += (object sender, RoutedEventArgs e) =>
-        {
-          typeCharacter(character);
-        };
+      button.Click += clickHandler;
 
-        keyboardGrid.Children.Add(button);
-      }
+      keyboardGrid.Children.Add(button);
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
