@@ -2,7 +2,7 @@
 
 <?define ProductName = "BurmeseVirtualKeyboard" ?>
 <?define ProductNameFriendly = "Burmese Virtual Keyboard" ?>
-<?define ProductVersion = "1.0.1.0" ?>
+<?define ProductVersion = "1.0.2.0" ?>
 <?define ProductManufacturer = "Hein Htat" ?>
 <?define ProductUpgradeCode = "fce9c404-82b5-4cfb-b850-eeb6aee34287" ?>
 
