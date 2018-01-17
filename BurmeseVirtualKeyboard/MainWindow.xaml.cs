@@ -13,8 +13,13 @@ namespace BurmeseVirtualKeyboard
         private const int numKeysPerRow = 24;
 
         private readonly FontFamily zawgyiOne = new FontFamily(new Uri("pack://application:,,,/"), "resources/#Zawgyi-One");
+        private readonly int numRows = (keyCharactersZawgyi.Length + numKeysPerRow - 1) / numKeysPerRow;
 
         private bool openedState = false;
+        private double windowY = 0.0;
+
+        private bool customDragMove;
+        private Point customDragMoveOrigin;
 
         public MainWindow()
         {
@@ -28,13 +33,9 @@ namespace BurmeseVirtualKeyboard
         {
             openedState = !openedState;
 
-            int numRows = (keyCharactersZawgyi.Length + numKeysPerRow - 1) / numKeysPerRow;
-
             if (openedState)
             {
                 closedGrid.Visibility = Visibility.Collapsed;
-
-                Top = 0;
 
                 Height = numRows * SystemParameters.PrimaryScreenWidth / numKeysPerRow;
                 Width = SystemParameters.PrimaryScreenWidth;
@@ -45,24 +46,31 @@ namespace BurmeseVirtualKeyboard
             {
                 openedGrid.Visibility = Visibility.Collapsed;
 
-                Top = (numRows - 1) * SystemParameters.PrimaryScreenWidth / numKeysPerRow;
-
                 Height = SystemParameters.PrimaryScreenWidth / numKeysPerRow;
                 Width = SystemParameters.PrimaryScreenWidth / numKeysPerRow;
 
                 closedGrid.Visibility = Visibility.Visible;
             }
 
+            updateTop();
             Left = SystemParameters.PrimaryScreenWidth - Width;
+        }
+
+        private void updateTop()
+        {
+            if (openedState)
+            {
+                Top = windowY;
+            }
+            else
+            {
+                Top = windowY + (numRows - 1) * SystemParameters.PrimaryScreenWidth / numKeysPerRow;
+            }
         }
 
         private void addKeyButtons()
         {
             int numRows = (keyCharactersZawgyi.Length + numKeysPerRow - 1) / numKeysPerRow;
-
-            openedGrid.Children.Clear();
-            openedGrid.RowDefinitions.Clear();
-            openedGrid.ColumnDefinitions.Clear();
 
             for (int i = 0; i < numRows; i++)
             {
@@ -98,10 +106,26 @@ namespace BurmeseVirtualKeyboard
                     });
             }
 
+            Button moveButton = addButton(
+                new TextBlock()
+                {
+                    Text = "⭥",
+                    TextAlignment = TextAlignment.Center,
+                    FontSize = 42.0,
+                    Width = 100.0,
+                    Height = 100.0,
+                    Padding = new Thickness(0.0, 20.0, 0.0, 0.0),
+                },
+                openedGrid,
+                numRows - 1,
+                numKeysPerRow - 3,
+                null);
+            setupMoveControl(moveButton);
+
             addButton(
                 new TextBlock()
                 {
-                    Text = "✖",
+                    Text = "✕",
                     TextAlignment = TextAlignment.Center,
                     FontSize = 42.0,
                     Width = 100.0,
@@ -119,7 +143,7 @@ namespace BurmeseVirtualKeyboard
             addButton(
                 new TextBlock()
                 {
-                    Text = "❱",
+                    Text = "❯",
                     TextAlignment = TextAlignment.Center,
                     FontSize = 42.0,
                     Width = 100.0,
@@ -137,7 +161,7 @@ namespace BurmeseVirtualKeyboard
             addButton(
                 new TextBlock()
                 {
-                    Text = "❰",
+                    Text = "❮",
                     TextAlignment = TextAlignment.Center,
                     FontSize = 42.0,
                     Width = 100.0,
@@ -153,7 +177,37 @@ namespace BurmeseVirtualKeyboard
                 });
         }
 
-        private void addButton(UIElement content, Grid grid, int row, int column, RoutedEventHandler clickHandler)
+        private void setupMoveControl(UIElement control)
+        {
+            control.PreviewMouseLeftButtonDown += (sender, e) =>
+            {
+                if (control.CaptureMouse())
+                {
+                    customDragMove = true;
+                    customDragMoveOrigin = e.GetPosition(this);
+                }
+            };
+
+            control.PreviewMouseMove += (sender, e) =>
+            {
+                if (!customDragMove) return;
+
+                double deltaY = e.GetPosition(this).Y - customDragMoveOrigin.Y;
+                windowY += deltaY;
+                updateTop();
+            };
+
+            control.PreviewMouseLeftButtonUp += (sender, e) =>
+            {
+                if (customDragMove)
+                {
+                    customDragMove = false;
+                    control.ReleaseMouseCapture();
+                }
+            };
+        }
+
+        private Button addButton(UIElement content, Grid grid, int row, int column, RoutedEventHandler clickHandler)
         {
             Button button = new Button()
             {
@@ -163,9 +217,14 @@ namespace BurmeseVirtualKeyboard
             Grid.SetRow(button, row);
             Grid.SetColumn(button, column);
 
-            button.Click += clickHandler;
+            if (clickHandler != null)
+            {
+                button.Click += clickHandler;
+            }
 
             grid.Children.Add(button);
+
+            return button;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
