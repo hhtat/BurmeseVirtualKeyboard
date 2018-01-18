@@ -97,4 +97,10 @@
     <Resource Include="resources\icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Release xcopy /e /y "$(TargetDir.TrimEnd('\'))" "$(SolutionDir)Setup\Files\"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>if $(ConfigurationName) == Release rmdir /s /q "$(SolutionDir)Setup\Files\"</PreBuildEvent>
+  </PropertyGroup>
 </Project>
