@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
+using WindowsInput;
 
 namespace BurmeseVirtualKeyboard
 {
@@ -12,8 +13,10 @@ namespace BurmeseVirtualKeyboard
         private const string keyCharactersZawgyi = "ကခဂဃငစဆဇဈဉညဋဌဍဎဏတထဒဓနပဖဗဘမယရ႐လဝသႆဟဠအ၏ဤဥဦဧဩဪ၌၍၎႑႒ဣါၚာိီုူေဲဳဴွံ့း္်ၼြၱၶၻ၀၁၂၃၄၅၆၇၈၉၊။ၽၾၿႀႁႂႃႄျ႔႕႖႗ၤၦၧၱၲၷ႖ၼဤ၌ၸၠဉ၍ၪႆၥၰဈၺၽႇႎႌႃႄႉႍႋၵၶၹၨၳၴၡၣႅၻၫၩႁႂ";
         private const int numKeysPerRow = 24;
 
-        private readonly FontFamily zawgyiOne = new FontFamily(new Uri("pack://application:,,,/"), "resources/#Zawgyi-One");
-        private readonly int numRows = (keyCharactersZawgyi.Length + numKeysPerRow - 1) / numKeysPerRow;
+        private static readonly FontFamily zawgyiOne = new FontFamily(new Uri("pack://application:,,,/"), "resources/#Zawgyi-One");
+        private static readonly int numRows = (keyCharactersZawgyi.Length + numKeysPerRow - 1) / numKeysPerRow;
+
+        private readonly InputSimulator input = new InputSimulator();
 
         private bool openedState = false;
         private double windowY = 0.0;
@@ -102,7 +105,7 @@ namespace BurmeseVirtualKeyboard
                     i % numKeysPerRow,
                     (object sender, RoutedEventArgs e) =>
                     {
-                        typeCharacter(character);
+                        input.Keyboard.TextEntry(character);
                     });
             }
 
@@ -240,45 +243,6 @@ namespace BurmeseVirtualKeyboard
             NativeMethods.SetWindowLong(interopHelper.Handle,
                 NativeMethods.WindowLong.GWL_EXSTYLE,
                 style);
-        }
-
-        private static void typeCharacter(char character)
-        {
-            NativeMethods.KeyboardInput keyboardInputDown = new NativeMethods.KeyboardInput
-            {
-                wVk = 0,
-                wScan = character,
-                dwFlags = NativeMethods.KeyboardInputFlags.KEYEVENTF_UNICODE,
-                time = 0,
-                dwExtraInfo = UIntPtr.Zero,
-            };
-
-            sendKeboyardInput(keyboardInputDown);
-
-            NativeMethods.KeyboardInput keyboardInputUp = new NativeMethods.KeyboardInput
-            {
-                wVk = 0,
-                wScan = character,
-                dwFlags = NativeMethods.KeyboardInputFlags.KEYEVENTF_UNICODE | NativeMethods.KeyboardInputFlags.KEYEVENTF_KEYUP,
-                time = 0,
-                dwExtraInfo = UIntPtr.Zero,
-            };
-
-            sendKeboyardInput(keyboardInputUp);
-        }
-
-        private static void sendKeboyardInput(NativeMethods.KeyboardInput keyboardInput)
-        {
-            NativeMethods.Input input = new NativeMethods.Input
-            {
-                type = NativeMethods.InputType.INPUT_KEYBOARD,
-                ki = keyboardInput,
-            };
-
-            NativeMethods.SendInput(
-                1,
-                new NativeMethods.Input[] { input },
-                Marshal.SizeOf(typeof(NativeMethods.Input)));
         }
     }
 }
