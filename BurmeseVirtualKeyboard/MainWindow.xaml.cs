@@ -11,6 +11,7 @@ namespace BurmeseVirtualKeyboard
     {
         private const string keyCharactersZawgyi = "ကခဂဃငစဆဇဈဉညဋဌဍဎဏတထဒဓနပဖဗဘမယရ႐လဝသႆဟဠအ၏ဤဥဦဧဩဪ၌၍၎႑႒ဣါၚာိီုူေဲဳဴွံ့း္်ၼြၱၶၻ၀၁၂၃၄၅၆၇၈၉၊။ၽၾၿႀႁႂႃႄျ႔႕႖႗ၤၦၧၱၲၷ႖ၼဤ၌ၸၠဉ၍ၪႆၥၰဈၺၽႇႎႌႃႄႉႍႋၵၶၹၨၳၴၡၣႅၻၫၩႁႂ";
         private const int numKeysPerRow = 24;
+        private const int numRowsClosed = 2;
 
         private static readonly FontFamily zawgyiOne = new FontFamily(new Uri("pack://application:,,,/"), "resources/#Zawgyi-One");
         private static readonly int numRows = (keyCharactersZawgyi.Length + numKeysPerRow - 1) / numKeysPerRow;
@@ -48,7 +49,7 @@ namespace BurmeseVirtualKeyboard
             {
                 openedGrid.Visibility = Visibility.Collapsed;
 
-                Height = SystemParameters.PrimaryScreenWidth / numKeysPerRow;
+                Height = numRowsClosed * SystemParameters.PrimaryScreenWidth / numKeysPerRow;
                 Width = SystemParameters.PrimaryScreenWidth / numKeysPerRow;
 
                 closedGrid.Visibility = Visibility.Visible;
@@ -84,99 +85,28 @@ namespace BurmeseVirtualKeyboard
                 openedGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
 
+            for (int i = 0; i < numRowsClosed; i++)
+            {
+                closedGrid.RowDefinitions.Add(new RowDefinition());
+            }
+
             for (int i = 0; i < keyCharactersZawgyi.Length; i++)
             {
                 char character = keyCharactersZawgyi[i];
 
                 addButton(
-                    new TextBlock()
-                    {
-                        Text = character.ToString(),
-                        TextAlignment = TextAlignment.Center,
-                        FontSize = 42.0,
-                        FontFamily = zawgyiOne,
-                        Width = 100.0,
-                        Height = 100.0,
-                        Padding = new Thickness(0.0, 14.0, 0.0, 0.0),
-                    },
+                    createButtonText(character.ToString(), zawgyiOne, 14.0),
                     openedGrid,
                     i / numKeysPerRow,
                     i % numKeysPerRow,
-                    (object sender, RoutedEventArgs e) =>
-                    {
-                        input.Keyboard.TextEntry(character);
-                    });
+                    (sender, e) => input.Keyboard.TextEntry(character));
             }
 
-            Button moveButton = addButton(
-                new TextBlock()
-                {
-                    Text = "⭥",
-                    TextAlignment = TextAlignment.Center,
-                    FontSize = 42.0,
-                    Width = 100.0,
-                    Height = 100.0,
-                    Padding = new Thickness(0.0, 20.0, 0.0, 0.0),
-                },
-                openedGrid,
-                numRows - 1,
-                numKeysPerRow - 3,
-                null);
-            setupMoveControl(moveButton);
+            setupMoveControl(addButton(createButtonText("⭥"), openedGrid, numRows - 1, numKeysPerRow - 2));
+            addButton(createButtonText("❯"), openedGrid, numRows - 1, numKeysPerRow - 1, (sender, e) => toggleState());
 
-            addButton(
-                new TextBlock()
-                {
-                    Text = "✕",
-                    TextAlignment = TextAlignment.Center,
-                    FontSize = 42.0,
-                    Width = 100.0,
-                    Height = 100.0,
-                    Padding = new Thickness(0.0, 20.0, 0.0, 0.0),
-                },
-                openedGrid,
-                numRows - 1,
-                numKeysPerRow - 2,
-                (object sender, RoutedEventArgs e) =>
-                {
-                    Close();
-                });
-
-            addButton(
-                new TextBlock()
-                {
-                    Text = "❯",
-                    TextAlignment = TextAlignment.Center,
-                    FontSize = 42.0,
-                    Width = 100.0,
-                    Height = 100.0,
-                    Padding = new Thickness(0.0, 20.0, 0.0, 0.0),
-                },
-                openedGrid,
-                numRows - 1,
-                numKeysPerRow - 1,
-                (object sender, RoutedEventArgs e) =>
-                {
-                    toggleState();
-                });
-
-            addButton(
-                new TextBlock()
-                {
-                    Text = "❮",
-                    TextAlignment = TextAlignment.Center,
-                    FontSize = 42.0,
-                    Width = 100.0,
-                    Height = 100.0,
-                    Padding = new Thickness(0.0, 20.0, 0.0, 0.0),
-                },
-                closedGrid,
-                1,
-                1,
-                (object sender, RoutedEventArgs e) =>
-                {
-                    toggleState();
-                });
+            addButton(createButtonText("❮"), closedGrid, 0, 0, (sender, e) => toggleState());
+            addButton(createButtonText("✕"), closedGrid, 1, 0, (sender, e) => Close());
         }
 
         private void setupMoveControl(UIElement control)
@@ -209,7 +139,7 @@ namespace BurmeseVirtualKeyboard
             };
         }
 
-        private Button addButton(UIElement content, Grid grid, int row, int column, RoutedEventHandler clickHandler)
+        private Button addButton(UIElement content, Grid grid, int row, int column, RoutedEventHandler clickHandler = null)
         {
             Button button = new Button()
             {
@@ -227,6 +157,26 @@ namespace BurmeseVirtualKeyboard
             grid.Children.Add(button);
 
             return button;
+        }
+
+        private TextBlock createButtonText(string text, FontFamily fontFamily = null, double topPadding = 20.0)
+        {
+            TextBlock textBlock = new TextBlock()
+            {
+                Text = text,
+                TextAlignment = TextAlignment.Center,
+                FontSize = 42.0,
+                Width = 100.0,
+                Height = 100.0,
+                Padding = new Thickness(0.0, topPadding, 0.0, 0.0),
+            };
+
+            if (fontFamily != null)
+            {
+                textBlock.FontFamily = fontFamily;
+            }
+
+            return textBlock;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
