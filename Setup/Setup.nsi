@@ -40,7 +40,7 @@ Function .onInit
   ClearErrors
   ExecWait "$R0 _?=$INSTDIR"
   IfErrors abort
-  
+
   StrCmp $R1 "" done
   Delete $R1
   Goto done
@@ -52,6 +52,12 @@ done:
 abort:
 
   Abort
+
+FunctionEnd
+
+Function .onInstSuccess
+
+  ShellExecAsUser::ShellExecAsUser "" "$SMPROGRAMS\$(^Name).lnk"
 
 FunctionEnd
 
