@@ -11,7 +11,7 @@ namespace BurmeseVirtualKeyboard
     {
         private const string keyCharactersZawgyi = "ကခဂဃငစဆဇဈဉညဋဌဍဎဏတထဒဓနပဖဗဘမယရ႐လဝသႆဟဠအ၏ဤဥဦဧဩဪ၌၍၎႑႒ဣါၚာိီုူေဲဳဴွံ့း္်ၼြၱၶၻ၀၁၂၃၄၅၆၇၈၉၊။ၽၾၿႀႁႂႃႄျ႔႕႖႗ၤၦၧၱၲၷ႖ၼဤ၌ၸၠဉ၍ၪႆၥၰဈၺၽႇႎႌႃႄႉႍႋၵၶၹၨၳၴၡၣႅၻၫၩႁႂ";
         private const int numKeysPerRow = 24;
-        private const int numRowsClosed = 2;
+        private const int numRowsClosed = 3;
 
         private static readonly FontFamily zawgyiOne = new FontFamily(new Uri("pack://application:,,,/"), "resources/#Zawgyi-One");
         private static readonly int numRows = (keyCharactersZawgyi.Length + numKeysPerRow - 1) / numKeysPerRow;
@@ -57,6 +57,13 @@ namespace BurmeseVirtualKeyboard
 
             updateTop();
             Left = SystemParameters.PrimaryScreenWidth - Width;
+        }
+
+        private void showInfo()
+        {
+            AboutDialog dialog = new AboutDialog();
+            dialog.Owner = this;
+            dialog.ShowDialog();
         }
 
         private void updateTop()
@@ -106,7 +113,8 @@ namespace BurmeseVirtualKeyboard
             addButton(createButtonText("❯"), openedGrid, numRows - 1, numKeysPerRow - 1, (sender, e) => toggleState());
 
             addButton(createButtonText("❮"), closedGrid, 0, 0, (sender, e) => toggleState());
-            addButton(createButtonText("✕"), closedGrid, 1, 0, (sender, e) => Close());
+            addButton(createButtonText("ℹ"), closedGrid, 1, 0, (sender, e) => showInfo());
+            addButton(createButtonText("✕"), closedGrid, 2, 0, (sender, e) => Close());
         }
 
         private void setupMoveControl(UIElement control)
