@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using WindowsInput;
 
 namespace BurmeseVirtualKeyboard
@@ -109,12 +111,22 @@ namespace BurmeseVirtualKeyboard
                     (sender, e) => input.Keyboard.TextEntry(character));
             }
 
-            setupMoveControl(addButton(createButtonText("⭥"), openedGrid, numRows - 1, numKeysPerRow - 2));
-            addButton(createButtonText("❯"), openedGrid, numRows - 1, numKeysPerRow - 1, (sender, e) => toggleState());
+            setupMoveControl(addButton(
+                createButtonPath("m 31 60 3 -3 16 16 16 -16 3 3 -19 19 z m 0 -14 3 3 16 -16 16 16 3 -3 -19 -19 z"),
+                openedGrid, numRows - 1, numKeysPerRow - 2));
+            addButton(
+                createButtonPath("m 43 27 -3 3 20 20 -20 20 3 3 23 -23 z"),
+                openedGrid, numRows - 1, numKeysPerRow - 1, (sender, e) => toggleState());
 
-            addButton(createButtonText("❮"), closedGrid, 0, 0, (sender, e) => toggleState());
-            addButton(createButtonText("ℹ"), closedGrid, 1, 0, (sender, e) => showInfo());
-            addButton(createButtonText("✕"), closedGrid, 2, 0, (sender, e) => Close());
+            addButton(
+                createButtonPath("M 57 27 60 30 40 50 60 70 57 73 34 50 Z"),
+                closedGrid, 0, 0, (sender, e) => toggleState());
+            addButton(
+                createButtonPath("m 48.203125 43.320312 h 3.59375 v 21.875 h -3.59375 z m 0 -8.515625 h 3.59375 v 4.550782 h -3.59375 z M 50 25 A 25 25 0 0 0 25 50 25 25 0 0 0 50 75 25 25 0 0 0 75 50 25 25 0 0 0 50 25 Z m 0 4 A 21 21 0 0 1 71 50 21 21 0 0 1 50 71 21 21 0 0 1 29 50 21 21 0 0 1 50 29 Z"),
+                closedGrid, 1, 0, (sender, e) => showInfo());
+            addButton(
+                createButtonPath("m 34 70 -3 -3 16 -16 -16 -16 3 -3 16 16 16 -16 3 3 -16 16 16 16 -3 3 -16 -16 z"),
+                closedGrid, 2, 0, (sender, e) => Close());
         }
 
         private void setupMoveControl(UIElement control)
@@ -185,6 +197,23 @@ namespace BurmeseVirtualKeyboard
             }
 
             return textBlock;
+        }
+
+        private Path createButtonPath(string data)
+        {
+            Path path = new Path()
+            {
+                Data = Geometry.Parse(data),
+                Width = 100.0,
+                Height = 100.0,
+            };
+
+            path.SetBinding(Path.FillProperty, new Binding(Button.ForegroundProperty.Name)
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(Button), 1),
+            });
+
+            return path;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
