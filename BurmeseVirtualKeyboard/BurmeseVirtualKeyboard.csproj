@@ -108,6 +108,6 @@
     <PostBuildEvent>if $(ConfigurationName) == Release xcopy /e /y "$(TargetDir.TrimEnd('\'))" "$(SolutionDir)Setup\Files\"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>if $(ConfigurationName) == Release rmdir /s /q "$(SolutionDir)Setup\Files\"</PreBuildEvent>
+    <PreBuildEvent>rmdir /s /q "$(SolutionDir)Setup\Files\"</PreBuildEvent>
   </PropertyGroup>
 </Project>

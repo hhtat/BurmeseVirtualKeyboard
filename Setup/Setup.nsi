@@ -7,7 +7,7 @@ Name "${PRNAME}"
 !define REGKEY "SOFTWARE\BurmeseVirtualKeyboard"
 !define UNREGKEY "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\BurmeseVirtualKeyboard"
 !define UNEXE "Uninstall.exe"
-!define VERSION 1.0.4
+!define VERSION 1.0.5
 !define PUBLISHER "Hein Htat"
 
 OutFile "BurmeseVKSetup.exe"
@@ -15,7 +15,7 @@ InstallDir "$PROGRAMFILES\Burmese Virtual Keyboard"
 InstallDirRegKey HKLM "${REGKEY}" "Install_Dir"
 RequestExecutionLevel admin
 
-VIProductVersion 1.0.4.0
+VIProductVersion 1.0.5.0
 VIAddVersionKey ProductName "${PRNAME}"
 VIAddVersionKey CompanyName "${PUBLISHER}"
 VIAddVersionKey LegalCopyright ""
